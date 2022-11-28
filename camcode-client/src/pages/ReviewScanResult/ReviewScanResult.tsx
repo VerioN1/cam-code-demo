@@ -36,7 +36,7 @@ const ReviewScanResult = () => {
 						<Title order={3} style={{color: textColor()}}>{state.sQuality}</Title>
 					</Center>
 				</Card>
-				<Text>{state?.scannedBarcode}</Text>
+				<Text>{JSON.stringify(state)}</Text>
 				{/*<Button mb="0.5rem" sx={{width: '50%'}} onClick={() => navigate('/Feedback')}>*/}
 				{/*	FeedBack*/}
 				{/*</Button>*/}
