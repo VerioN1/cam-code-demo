@@ -1,29 +1,16 @@
 version: "3.9"
 services:
-  camcode-api:
-    build:
-      context: ./server
-      dockerfile: ./Dockerfile-prod
-    ports:
-      - "8081:8081"
-  camcode-manager:
-    build:
-      context: ./camcode-manager
-      dockerfile: ./Dockerfile-prod
-    ports:
-      - '4431:4431'
-
   camcode-client:
     build:
       context: ./camcode-client
       dockerfile: ./Dockerfile-prod
     ports:
-      - '443:443'
+      - '443:4432'
   nginx:
     restart: always
     build:
       context: ./nginx
       dockerfile: ./Dockerfile-prod
     ports:
-      - "3443:443"
+      - "3443:4432"
 #docker-compose -f docker-compose-prod.yml up --build --progress=plain
