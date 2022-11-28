@@ -1,0 +1,12 @@
+FROM node:slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+ADD . .
+EXPOSE 3000
+ARG VITE_APP_BASE_URL='http://localhost:8081/api'
+ENV VITE_APP_BASE_URL='http://localhost:8081/api'
+ENTRYPOINT ["/bin/bash", "-c", "npm rebuild esbuild && npm start"]
+
+#docker build -f ./Dockerfile-dev -t camcode-client-dev .
+#docker run -d -p 3000:3000 --name c1 -v app/node_modules -v ${pwd}:/app camcode-client-dev

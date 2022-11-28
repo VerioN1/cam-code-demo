@@ -1,0 +1,14 @@
+FROM node:alpine
+
+WORKDIR /app
+COPY package.json ./
+RUN npm install
+COPY . .
+
+EXPOSE 8081
+
+RUN apk add --update vim
+RUN npm install pm2 -g
+CMD ["pm2-runtime", "app.js"]
+
+#docker build -f ./Dockerfile-prod -t camcode-api-prod .
