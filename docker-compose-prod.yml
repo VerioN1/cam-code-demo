@@ -5,12 +5,12 @@ services:
       context: ./camcode-client
       dockerfile: ./Dockerfile-prod
     ports:
-      - '443:4432'
+      - '4432:443'
   nginx:
     restart: always
     build:
       context: ./nginx
       dockerfile: ./Dockerfile-prod
     ports:
-      - "3443:4432"
+      - "3443:443"
 #docker-compose -f docker-compose-prod.yml up --build --progress=plain
