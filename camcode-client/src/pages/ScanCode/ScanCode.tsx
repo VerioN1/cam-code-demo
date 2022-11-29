@@ -35,8 +35,6 @@ const ScanCode = () => {
 	const validateScan = useMutation(validateBarcode);
 	const handleSendBarcode = useMutation(sendBarcode, {
 		onError: (e) => {
-			console.log(e);
-			debugger;
 			location.reload();
 		},
 		onSuccess: (res) => {
