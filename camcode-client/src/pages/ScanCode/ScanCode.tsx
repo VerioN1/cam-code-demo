@@ -3,6 +3,7 @@ import useCustomTheme from '@/hooks/useCustomTheme';
 import useFetchTheme from '@/hooks/useFetchTheme';
 import Layout from '@/layout/Layout';
 import TempBarcodeScanner from '@/pages/ScanCode/TempBarcodeScanner';
+import TempBarcodeScanner2 from '@/pages/ScanCode/TempBarcodeScanner2';
 import { sendBarcode, validateBarcode } from '@/services/barcode.service';
 import { BarcodeScannerResult } from '@/types/barcodeScanner';
 import { Button, Center, Text } from '@mantine/core';
@@ -103,9 +104,10 @@ const ScanCode = () => {
 	return (
 		<Layout>
 			<Center sx={{flexDirection: 'column', paddingInline: '2rem'}}>
-				<TempBarcodeScanner onDetected={(resp: string): void => {
-					setCode(resp);
-				}} />
+				{/*<TempBarcodeScanner onDetected={(resp: string): void => {*/}
+				{/*	console.log(resp);*/}
+				{/*}} />*/}
+				<TempBarcodeScanner2/>
 				{/*{!code && (*/}
 				{/*	<div style={{width: '90vw'}}>*/}
 				{/*		<Text>*/}

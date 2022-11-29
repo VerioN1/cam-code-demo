@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ericblade/quagga2": "^1.7.7",
     "@mantine/core": "^4.2.2",
     "@mantine/hooks": "^4.2.2",
     "@mantine/notifications": "^4.2.5",
