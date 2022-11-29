@@ -2,6 +2,7 @@ import BarcodeScanner from '@/components/BarcodeScanner/BarcodeScanner';
 import useCustomTheme from '@/hooks/useCustomTheme';
 import useFetchTheme from '@/hooks/useFetchTheme';
 import Layout from '@/layout/Layout';
+import TempBarcodeScanner from '@/pages/ScanCode/TempBarcodeScanner';
 import { sendBarcode, validateBarcode } from '@/services/barcode.service';
 import { BarcodeScannerResult } from '@/types/barcodeScanner';
 import { Button, Center, Text } from '@mantine/core';
@@ -33,7 +34,11 @@ const ScanCode = () => {
 
 	const validateScan = useMutation(validateBarcode);
 	const handleSendBarcode = useMutation(sendBarcode, {
-		onError: () => location.reload(),
+		onError: (e) => {
+			console.log(e);
+			debugger;
+			location.reload();
+		},
 		onSuccess: (res) => {
 			console.log(res);
 			setCustomStyle((prev: any) => ({...prev, iScanID: res.message.scid}));
@@ -54,19 +59,18 @@ const ScanCode = () => {
 
 	useEffect(() => {
 		const sendRequest = async () => {
-			if (code.length > 12) {
+			if (code.length > 10) {
 				setIsLoading(true);
-				const preparedCode = code.slice(1, 13);
-				const Qc = await validateScan.mutateAsync({
-					scannedBarcode: preparedCode.slice(0, 10),
-					currentScannedQC: code.slice(-2)[0]
-				});
-
-				const barcodeToSend = replaceAt(preparedCode, 10, Qc);
-				setCustomStyle((prev: any) => ({...prev, barcode: barcodeToSend}));
-				setCode(barcodeToSend);
+				// const preparedCode = code
+				// const Qc = await validateScan.mutateAsync({
+				// 	scannedBarcode: preparedCode.slice(0, 10),
+				// 	currentScannedQC: code.slice(-2)[0]
+				// });
+				//
+				// const barcodeToSend = replaceAt(preparedCode, 10, Qc);
+				setCustomStyle((prev: any) => ({...prev, barcode: code}));
 				handleSendBarcode.mutate({
-					barcode: barcodeToSend,
+					barcode: code,
 					//@ts-ignore
 					long: state?.longitude || 0,
 					//@ts-ignore
@@ -100,32 +104,27 @@ const ScanCode = () => {
 	};
 	return (
 		<Layout>
-			<Center sx={{flexDirection: 'column'}}>
-				<RichTextEditor
-					value={value}
-					styles={{
-						root: {border: 'none', backgroundColor: 'transparent'}
-					}}
-					onChange={onChange}
-					readOnly
-				/>
-				{!code && (
-					<div style={{width: '90vw'}}>
-						<Text>
-							If you are having trouble scanning the tag, change the barcode’s distance from the
-							camera.
-						</Text>
-						<BarcodeScanner
-							onUpdate={(resp: BarcodeScannerResult): boolean => {
-								if (resp) {
-									if (resp.text.length > 9) setCode(resp.text);
-									return true;
-								}
-								return false;
-							}}
-						/>
-					</div>
-				)}
+			<Center sx={{flexDirection: 'column', paddingInline: '2rem'}}>
+				<TempBarcodeScanner onDetected={(resp: string): void => {
+					setCode(resp);
+				}} />
+				{/*{!code && (*/}
+				{/*	<div style={{width: '90vw'}}>*/}
+				{/*		<Text>*/}
+				{/*			If you are having trouble scanning the tag, change the barcode’s distance from the*/}
+				{/*			camera.*/}
+				{/*		</Text>*/}
+				{/*		<BarcodeScanner*/}
+				{/*			onUpdate={(resp: BarcodeScannerResult): boolean => {*/}
+				{/*				if (resp) {*/}
+				{/*					if (resp.text.length > 9) setCode(resp.text);*/}
+				{/*					return true;*/}
+				{/*				}*/}
+				{/*				return false;*/}
+				{/*			}}*/}
+				{/*		/>*/}
+				{/*	</div>*/}
+				{/*)}*/}
 				{isLoading && <p>loading...</p>}
 				{import.meta.env.DEV && <Button onClick={onSkip}>Skip</Button>}
 			</Center>

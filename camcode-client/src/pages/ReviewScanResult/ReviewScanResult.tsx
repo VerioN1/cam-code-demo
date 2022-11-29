@@ -21,7 +21,6 @@ const ReviewScanResult = () => {
 	useFetchTheme();
 	const generateSurveyLink = customStyle.surveyMetaData ?
 		`${customStyle.surveyLink}${customStyle.surveyLink[customStyle.surveyLink.length - 1] === '/' ? '' : ''}?${customStyle.surveyQueryParams[0]}=${state?.codeFromCamera?.slice(0, -2) || state.scannedBarcode}&${customStyle?.surveyQueryParams[1]}=${state?.sQuality?.substring(0, 3)}&${customStyle?.surveyQueryParams[2]}=${state.scannedBarcodeSCID}` : customStyle.surveyLink;
-	debugger;
 
 	return (
 		<Layout>

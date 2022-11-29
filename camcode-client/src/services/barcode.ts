@@ -4,24 +4,15 @@ import {deserializeError} from 'serialize-error';
 import HybridBinarizer from '@zxing/library/cjs/core/common/HybridBinarizer';
 import BinaryBitmap from '@zxing/library/cjs/core/BinaryBitmap';
 import {HTMLCanvasElementLuminanceSource} from '@zxing/library/cjs/browser/HTMLCanvasElementLuminanceSource';
-
-import MultiFormatUPCEANReader from '@zxing/library/cjs/core/oned/MultiFormatUPCEANReader';
+import MultiFormatUPCEANReader from '@zxing/library/cjs/core/oned/Code128Reader';
 import {videoService} from '@/services/index';
 import {BarcodeScannerResult} from '@/types/barcodeScanner';
 
 
 const hints = new Map();
-const formats = [BarcodeFormat.UPC_EAN_EXTENSION, BarcodeFormat];
+const formats = [BarcodeFormat.EAN_13, BarcodeFormat.CODE_128, BarcodeFormat.UPC_EAN_EXTENSION];
 const codeReader = new MultiFormatUPCEANReader();
 hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
-
-function updateDecodeResult(qrVal: any) {
-	debugger;
-	if (qrVal.text.length < 10) {
-		return null;
-	}
-	return qrVal.text;
-}
 
 function zxingDecodeCanvas(canvas: HTMLCanvasElement) {
 	const luminanceSource = new HTMLCanvasElementLuminanceSource(canvas);

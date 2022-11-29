@@ -1,0 +1,102 @@
+.drawingBuffer {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.videoCamera {
+
+}
+.viewport {
+    position: relative;
+}
+@media (max-width: 603px) {
+
+    #container {
+        width: 300px;
+        margin: 10px auto;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    #container form.voucher-form input.voucher-code {
+        width: 180px;
+    }
+}
+@media (max-width: 603px) {
+
+    .reader-config-group {
+        width: 100%;
+    }
+
+    .reader-config-group label > span {
+        width: 50%;
+    }
+
+    .reader-config-group label > select, .reader-config-group label > input {
+        max-width: calc(50% - 2px);
+    }
+
+    #interactive.viewport {
+        /*width:  700px;*/
+        /*height: 300px;*/
+        overflow: hidden;
+    }
+
+
+    #interactive.viewport canvas, video {
+        /*margin-top: -50px;*/
+        /*width: 700px;*/
+        /*height: 400px;*/
+    }
+
+
+
+    #result_strip {
+        margin-top: 5px;
+        padding-top: 5px;
+    }
+
+    #result_strip ul.thumbnails > li {
+        width: 150px;
+    }
+
+    #result_strip ul.thumbnails > li .thumbnail .imgWrapper {
+        width: 130px;
+        height: 130px;
+        overflow: hidden;
+    }
+
+    #result_strip ul.thumbnails > li .thumbnail .imgWrapper img {
+        margin-top: -25px;
+        width: 130px;
+        height: 180px;
+    }
+}
+@media (max-width: 603px) {
+
+    .overlay.scanner {
+        width: 640px;
+        height: 510px;
+        padding: 20px;
+        margin-top: -275px;
+        margin-left: -340px;
+        background-color: #FFF;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    .overlay.scanner > .header {
+        margin-bottom: 14px;
+    }
+
+    .overlay.scanner > .header h4, .overlay.scanner > .header .close {
+        line-height: 16px;
+    }
+
+    .overlay.scanner > .header .close {
+        height: 16px;
+        width: 16px;
+    }
+}

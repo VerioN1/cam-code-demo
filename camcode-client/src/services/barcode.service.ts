@@ -4,6 +4,7 @@ export type SendBarcodeParams = { barcode: string; long: number; lat: number };
 
 export const sendBarcode = async ({barcode, long, lat}: SendBarcodeParams) => {
 	const params = {barcode, long, lat};
+	debugger;
 	const {data} = await varCodeDev.post('/proxy/barcode', params);
 	return data;
 };
