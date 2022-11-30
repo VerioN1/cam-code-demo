@@ -4,8 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ARG VITE_APP_BASE_URL='https://apps.varcode.com:3443/api'
-ENV VITE_APP_BASE_URL='https://apps.varcode.com:3443/api'
+ARG VITE_APP_BASE_URL='https://apps-dev.varcode.com:3443/api'
+ENV VITE_APP_BASE_URL='https://apps-dev.varcode.com:3443/api'
 RUN npm run build
 
 FROM nginx:alpine
