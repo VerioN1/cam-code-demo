@@ -1,12 +1,11 @@
 import varCodeDev from './axios.config';
 
-export type SendBarcodeParams = { barcode: string; long: number; lat: number };
+export type SendBarcodeParams = { barcode: string; long: number; lat: number, miniCodeState?: object };
 
-export const sendBarcode = async ({barcode, long, lat}: SendBarcodeParams) => {
+export const sendBarcode = async ({barcode, long, lat, miniCodeState}: SendBarcodeParams) => {
 	const params = {barcode, long, lat};
-	debugger;
 	const {data} = await varCodeDev.post('/proxy/barcode', params);
-	return data;
+	return {...data, miniCodeState};
 };
 
 export const sendFeedback = async (

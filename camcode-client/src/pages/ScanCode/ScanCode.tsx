@@ -1,13 +1,9 @@
-import BarcodeScanner from '@/components/BarcodeScanner/BarcodeScanner';
 import useCustomTheme from '@/hooks/useCustomTheme';
 import useFetchTheme from '@/hooks/useFetchTheme';
 import Layout from '@/layout/Layout';
-import TempBarcodeScanner from '@/pages/ScanCode/TempBarcodeScanner';
 import TempBarcodeScanner2 from '@/pages/ScanCode/TempBarcodeScanner2';
 import { sendBarcode, validateBarcode } from '@/services/barcode.service';
-import { BarcodeScannerResult } from '@/types/barcodeScanner';
-import { Button, Center, Text } from '@mantine/core';
-import { RichTextEditor } from '@mantine/rte';
+import { Button, Center } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -26,23 +22,21 @@ const replaceAt = (str: string, index: number, char: string) => {
 
 const ScanCode = () => {
 	useFetchTheme();
-	const {customStyle, setCustomStyle} = useCustomTheme();
+	const {setCustomStyle} = useCustomTheme();
 	const {state} = useLocation();
 	const [code, setCode] = useState<string>('');
-	const [value, onChange] = useState(customStyle.scanBarcodeInfoText);
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
 
-	const validateScan = useMutation(validateBarcode);
 	const handleSendBarcode = useMutation(sendBarcode, {
 		onError: (e) => {
 			location.reload();
 		},
 		onSuccess: (res) => {
-			console.log(res);
 			setCustomStyle((prev: any) => ({...prev, iScanID: res.message.scid}));
 			navigate('/ReviewScan', {
 				state: {
+					miniCodeState: res.miniCodeState,
 					textColor: res.message.nColor,
 					scannedBarcode: code.slice(0, 10),
 					currentScannedQC: code.slice(-2)[0],
@@ -81,7 +75,7 @@ const ScanCode = () => {
 	}, [code]);
 
 	const onSkip = () => {
-		const scannedCode = '305038820111';
+		const scannedCode = 'P00011005352';
 		setCode(scannedCode);
 		handleSendBarcode.mutate({
 			barcode: scannedCode.slice(0, 12),
@@ -94,12 +88,43 @@ const ScanCode = () => {
 			scannedBarcode: scannedCode.slice(0, 10),
 			currentScannedQC: scannedCode.slice(-2)[0]
 		});
-		navigate('/ReviewScan', {
-			state: {
-				cardBg: '#ab2929',
-				result: 'You Meal is out of date'
+		// navigate('/ReviewScan', {
+		// 	state: {
+		// 		cardBg: '#ab2929',
+		// 		result: 'You Meal is out of date'
+		// 	}
+		// });
+	};
+	const onMiniCodeScan = (code: string | undefined) => {
+		let scannedCode = '1212033';
+		if(typeof code === 'string') {
+			scannedCode = code;
+		}
+		const scanId = `${scannedCode.slice(0,2)}`
+		const temp = `${scannedCode.slice(2,4)}`
+		const below0TempTime = `${scannedCode[4]}`;
+		const above0TempTime = `${scannedCode.slice(5,7)}`;
+		const qc = 2;
+		const codeToSend = `90000000${scanId}${qc}9`
+
+		handleSendBarcode.mutateAsync({
+			barcode: codeToSend,
+			//@ts-ignore
+			long: state?.longitude || 0,
+			//@ts-ignore
+			lat: state?.latitude || 0,
+			miniCodeState: {
+				above0TempTime,
+				below0TempTime,
+				temp,
+				qc,
+				scanId
 			}
 		});
+		// validateBarcode({
+		// 	scannedBarcode: scannedCode.slice(0, 10),
+		// 	currentScannedQC: scannedCode.slice(-2)[0]
+		// });
 	};
 	return (
 		<Layout>
@@ -107,7 +132,10 @@ const ScanCode = () => {
 				{/*<TempBarcodeScanner onDetected={(resp: string): void => {*/}
 				{/*	console.log(resp);*/}
 				{/*}} />*/}
-				<TempBarcodeScanner2/>
+				<TempBarcodeScanner2 onDetected={(resp: string): void => {
+					setCode(resp);
+				}}
+				onDetectedMini={onMiniCodeScan}/>
 				{/*{!code && (*/}
 				{/*	<div style={{width: '90vw'}}>*/}
 				{/*		<Text>*/}
@@ -126,7 +154,7 @@ const ScanCode = () => {
 				{/*	</div>*/}
 				{/*)}*/}
 				{isLoading && <p>loading...</p>}
-				{import.meta.env.DEV && <Button onClick={onSkip}>Skip</Button>}
+				{import.meta.env.DEV && <Button onClick={onMiniCodeScan}>Skip</Button>}
 			</Center>
 		</Layout>
 	);

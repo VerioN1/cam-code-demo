@@ -35,14 +35,28 @@ const ReviewScanResult = () => {
 						<Title order={3} style={{color: textColor()}}>{state.sQuality}</Title>
 					</Center>
 				</Card>
-				<Text>{JSON.stringify(state)}</Text>
+				{/*<Text>{JSON.stringify(state)}</Text>*/}
+				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+					<Text>ID</Text> <Text>{state.miniCodeState?.scanId}</Text>
+				</div>
+				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+					<Text>Temp</Text> <Text>{state.miniCodeState?.temp}</Text>
+				</div>
+				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+					<Text>Duration Above 0 degrees</Text>
+					<Text>{state.miniCodeState?.above0TempTime >= 99 ? 'above 99 minutes' : `${state.miniCodeState?.above0TempTime} minutes`}</Text>
+				</div>
+				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+					<Text>Duration below 0 degrees</Text>
+					<Text>{state.miniCodeState?.below0TempTime >= 9 ? 'above 10 minutes' : `${state.miniCodeState?.below0TempTime} minutes`}</Text>
+				</div>
 				{/*<Button mb="0.5rem" sx={{width: '50%'}} onClick={() => navigate('/Feedback')}>*/}
 				{/*	FeedBack*/}
 				{/*</Button>*/}
 				{/*{!(customStyle?.removeContactButton) &&*/}
-                {/*    <Button my="0.5rem" sx={{width: '50%'}} onClick={() => navigate('/ContactUs')}>*/}
-                {/*        Contact Us*/}
-                {/*    </Button>}*/}
+				{/*    <Button my="0.5rem" sx={{width: '50%'}} onClick={() => navigate('/ContactUs')}>*/}
+				{/*        Contact Us*/}
+				{/*    </Button>}*/}
 				{/*{customStyle.surveyLink && (*/}
 				{/*	<>*/}
 				{/*		<Text mt="2rem">We Want Your Feedback!</Text>*/}
