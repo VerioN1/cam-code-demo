@@ -99,13 +99,14 @@ const ScanCode = () => {
 		// });
 	};
 	const onMiniCodeScan = (code: string | undefined) => {
-		let scannedCode = '1212033';
+		let scannedCode = '1212100';
 		if(typeof code === 'string') {
 			scannedCode = code;
 		}
 		const scanId = `${scannedCode.slice(0,2)}`
 		const temp = `${scannedCode.slice(2,4)}`
 		const below0TempTime = `${scannedCode[4]}`;
+		debugger;
 		const above0TempTime = `${scannedCode.slice(5,7)}`;
 		let qc = 1;
 		if(Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
