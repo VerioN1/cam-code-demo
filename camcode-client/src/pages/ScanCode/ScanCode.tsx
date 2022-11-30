@@ -107,6 +107,7 @@ const ScanCode = () => {
 		const temp = `${scannedCode.slice(2,4)}`
 		const below0TempTime = `${scannedCode[4]}`;
 		debugger;
+		console.log(scannedCode);
 		const above0TempTime = `${scannedCode.slice(5,7)}`;
 		let qc = 1;
 		if(Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
@@ -119,7 +120,14 @@ const ScanCode = () => {
 		if(Number(below0TempTime) >= 1){
 			qc = 5;
 		}
-
+		const miniCodeState =  {
+			above0TempTime,
+			below0TempTime,
+			temp,
+			qc,
+			scanId
+		}
+		console.log(miniCodeState);
 		const codeToSend = `90000000${scanId}${qc}9`
 
 		handleSendBarcode.mutateAsync({
@@ -128,13 +136,7 @@ const ScanCode = () => {
 			long: state?.longitude || 0,
 			//@ts-ignore
 			lat: state?.latitude || 0,
-			miniCodeState: {
-				above0TempTime,
-				below0TempTime,
-				temp,
-				qc,
-				scanId
-			}
+			miniCodeState
 		});
 		// validateBarcode({
 		// 	scannedBarcode: scannedCode.slice(0, 10),
