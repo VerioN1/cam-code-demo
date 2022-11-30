@@ -70,7 +70,7 @@ const ReviewScanResult = () => {
 				{/*		</Anchor>*/}
 				{/*	</>*/}
 				{/*)}*/}
-				<Button mt="4rem" sx={{width: '50%'}} color="red" onClick={() => navigate(-1)}>
+				<Button mt="4rem" sx={{width: '50%'}} color="red" onClick={() => navigate('/ScanCode')}>
 					Scan Again
 				</Button>
 			</Center>

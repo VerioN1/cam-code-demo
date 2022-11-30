@@ -3,7 +3,7 @@ import useFetchTheme from '@/hooks/useFetchTheme';
 import Layout from '@/layout/Layout';
 import TempBarcodeScanner2 from '@/pages/ScanCode/TempBarcodeScanner2';
 import { sendBarcode, validateBarcode } from '@/services/barcode.service';
-import { Button, Center } from '@mantine/core';
+import { Button, Center, Input, Text } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -27,6 +27,9 @@ const ScanCode = () => {
 	const [code, setCode] = useState<string>('');
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
+	const [firstQcLimit, setFirstQcLimit] = useState(15);
+	const [secondQcLimit, setSecondQcLimit] = useState(60);
+	const [thirdQcLimit, setThirdQcLimit] = useState(240);
 
 	const handleSendBarcode = useMutation(sendBarcode, {
 		onError: (e) => {
@@ -104,7 +107,18 @@ const ScanCode = () => {
 		const temp = `${scannedCode.slice(2,4)}`
 		const below0TempTime = `${scannedCode[4]}`;
 		const above0TempTime = `${scannedCode.slice(5,7)}`;
-		const qc = 2;
+		let qc = 0;
+		if(Number(above0TempTime) <= firstQcLimit) {
+			qc = 2;
+		}else if (Number(above0TempTime) <= secondQcLimit) {
+			qc = 3;
+		}else if (Number(above0TempTime) <= thirdQcLimit) {
+			qc = 4;
+		}
+		if(Number(below0TempTime) >= 1){
+			qc = 5;
+		}
+
 		const codeToSend = `90000000${scanId}${qc}9`
 
 		handleSendBarcode.mutateAsync({
@@ -130,6 +144,10 @@ const ScanCode = () => {
 	return (
 		<Layout>
 			<Center sx={{flexDirection: 'column', paddingInline: '2rem'}}>
+				<Text>Set QC limits</Text>
+				<Input value={firstQcLimit} type="number" placeholder="set first qc limit" mt="1rem"  onChange={(e: any) => setFirstQcLimit(e.target.value)}/>
+				<Input value={secondQcLimit} type="number" placeholder="set second qc limit" mt="1rem" onChange={(e: any) => setSecondQcLimit(e.target.value)}/>
+				<Input value={thirdQcLimit} type="number" placeholder="set third qc limit" mt="1rem" onChange={(e: any) => setThirdQcLimit(e.target.value)}/>
 				{/*<TempBarcodeScanner onDetected={(resp: string): void => {*/}
 				{/*	console.log(resp);*/}
 				{/*}} />*/}
