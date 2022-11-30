@@ -126,6 +126,7 @@ const ScanCode = () => {
 		// 	currentScannedQC: scannedCode.slice(-2)[0]
 		// });
 	};
+
 	return (
 		<Layout>
 			<Center sx={{flexDirection: 'column', paddingInline: '2rem'}}>
@@ -154,6 +155,7 @@ const ScanCode = () => {
 				{/*	</div>*/}
 				{/*)}*/}
 				{isLoading && <p>loading...</p>}
+				{/*@ts-ignore*/}
 				{import.meta.env.DEV && <Button onClick={onMiniCodeScan}>Skip</Button>}
 			</Center>
 		</Layout>
