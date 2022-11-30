@@ -113,7 +113,7 @@ const ScanCode = () => {
 		if(Number(above0TempTime) < firstQcLimit){
 			qc = 1;
 		}
-		if(Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
+		else if(Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
 			qc = 2;
 		}else if (Number(above0TempTime) <= secondQcLimit) {
 			qc = 3;
