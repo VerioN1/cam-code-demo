@@ -107,8 +107,8 @@ const ScanCode = () => {
 		const temp = `${scannedCode.slice(2,4)}`
 		const below0TempTime = `${scannedCode[4]}`;
 		const above0TempTime = `${scannedCode.slice(5,7)}`;
-		let qc = 0;
-		if(Number(above0TempTime) <= firstQcLimit) {
+		let qc = 1;
+		if(Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
 			qc = 2;
 		}else if (Number(above0TempTime) <= secondQcLimit) {
 			qc = 3;
