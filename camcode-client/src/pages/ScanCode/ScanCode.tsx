@@ -4,6 +4,7 @@ import Layout from '@/layout/Layout';
 import TempBarcodeScanner2 from '@/pages/ScanCode/TempBarcodeScanner2';
 import { sendBarcode, validateBarcode } from '@/services/barcode.service';
 import { Button, Center, Input, Text } from '@mantine/core';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -24,6 +25,7 @@ const ScanCode = () => {
 	useFetchTheme();
 	const {setCustomStyle} = useCustomTheme();
 	const {state} = useLocation();
+	const [cordinates, setCordinates] = useState({latitude: 0, longitude: 0});
 	const [code, setCode] = useState<string>('');
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
@@ -57,27 +59,16 @@ const ScanCode = () => {
 
 	useEffect(() => {
 		const sendRequest = async () => {
-			if (code.length > 10) {
-				setIsLoading(true);
-				// const preparedCode = code
-				// const Qc = await validateScan.mutateAsync({
-				// 	scannedBarcode: preparedCode.slice(0, 10),
-				// 	currentScannedQC: code.slice(-2)[0]
-				// });
-				//
-				// const barcodeToSend = replaceAt(preparedCode, 10, Qc);
-				setCustomStyle((prev: any) => ({...prev, barcode: code}));
-				handleSendBarcode.mutate({
-					barcode: code,
-					//@ts-ignore
-					long: state?.longitude || 0,
-					//@ts-ignore
-					lat: state?.latitude || 0
-				});
+			try{
+				const res = await axios.get('https://geolocation-db.com/json/')
+				console.log(res.data);
+				setCordinates({latitude: res.data.latitude, longitude: res.data.longitude});
+			}catch (e) {
+				console.log(e);
 			}
 		};
 		sendRequest();
-	}, [code]);
+	}, []);
 
 	const onSkip = () => {
 		const scannedCode = 'P00011005352';
@@ -136,9 +127,9 @@ const ScanCode = () => {
 		handleSendBarcode.mutateAsync({
 			barcode: codeToSend,
 			//@ts-ignore
-			long: state?.longitude || 0,
+			long: state?.longitude || cordinates.longitude,
 			//@ts-ignore
-			lat: state?.latitude || 0,
+			lat: state?.latitude || cordinates.latitude,
 			miniCodeState
 		});
 		// validateBarcode({
