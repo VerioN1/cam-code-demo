@@ -130,7 +130,6 @@ const ScanCode = () => {
 			qc,
 			scanId
 		}
-		console.log(miniCodeState);
 		const codeToSend = `90000000${scanId}${qc}9`
 
 		handleSendBarcode.mutateAsync({
