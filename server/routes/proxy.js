@@ -6,12 +6,13 @@ import axios from "axios";
 const proxyRouter = Router();
 
 proxyRouter.post("/barcode", async (req, res) => {
+    console.log(req.body);
     const apiBarCodeResponse = await SendBarcode({
         barcode: req.body.barcode,
         lat: req.body.lat,
         long: req.body.long,
     });
-
+    console.log(apiBarCodeResponse)
     const result = JSON.parse(apiBarCodeResponse.d);
 
     if (result.scid == 0) {

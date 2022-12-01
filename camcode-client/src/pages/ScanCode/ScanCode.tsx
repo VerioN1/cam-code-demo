@@ -101,10 +101,11 @@ const ScanCode = () => {
 		// });
 	};
 	const onMiniCodeScan = (code: string | undefined) => {
-		let scannedCode = '1212100';
+		let scannedCode = '1271033';
 		if(typeof code === 'string') {
 			scannedCode = code;
 		}
+		console.log(scannedCode);
 		const scanId = `${scannedCode.slice(0,2)}`
 		const temp = `${scannedCode.slice(2,4)}`
 		const below0TempTime = Number(`${scannedCode[4]}`);
