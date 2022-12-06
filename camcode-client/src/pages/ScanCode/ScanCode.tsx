@@ -98,8 +98,8 @@ const ScanCode = () => {
 		}
 		console.log(scannedCode);
 		const scanId = `${scannedCode.slice(0,2)}`
-		const temp = `${scannedCode.slice(2,4)}`
-		const below0TempTime = Number(`${scannedCode[4]}`);
+		const below0TempTime = Number(`${scannedCode[2]}`);
+		const temp = `${scannedCode.slice(3,5)}`
 		const above0TempTime =  Number(`${scannedCode.slice(5,7)}`);
 		let qc = 1;
 		if(Number(above0TempTime) < firstQcLimit){
@@ -132,10 +132,6 @@ const ScanCode = () => {
 			lat: state?.latitude || cordinates.latitude,
 			miniCodeState
 		});
-		// validateBarcode({
-		// 	scannedBarcode: scannedCode.slice(0, 10),
-		// 	currentScannedQC: scannedCode.slice(-2)[0]
-		// });
 	};
 
 	return (
