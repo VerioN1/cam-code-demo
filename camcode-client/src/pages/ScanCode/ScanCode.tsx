@@ -3,7 +3,7 @@ import useFetchTheme from '@/hooks/useFetchTheme';
 import Layout from '@/layout/Layout';
 import TempBarcodeScanner2 from '@/pages/ScanCode/TempBarcodeScanner2';
 import { sendBarcode, validateBarcode } from '@/services/barcode.service';
-import { Button, Center, Input, Text } from '@mantine/core';
+import { Button, Center, Input, Loader, Text } from '@mantine/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-query';
@@ -59,11 +59,11 @@ const ScanCode = () => {
 
 	useEffect(() => {
 		const sendRequest = async () => {
-			try{
-				const res = await axios.get('https://geolocation-db.com/json/')
+			try {
+				const res = await axios.get('https://geolocation-db.com/json/');
 				console.log(res.data);
 				setCordinates({latitude: res.data.latitude, longitude: res.data.longitude});
-			}catch (e) {
+			} catch (e) {
 				console.log(e);
 			}
 		};
@@ -93,36 +93,35 @@ const ScanCode = () => {
 	};
 	const onMiniCodeScan = (code: string | undefined) => {
 		let scannedCode = '1271033';
-		if(typeof code === 'string') {
+		if (typeof code === 'string') {
 			scannedCode = code;
 		}
 		console.log(scannedCode);
-		const scanId = `${scannedCode.slice(0,2)}`
+		const scanId = `${scannedCode.slice(0, 2)}`;
 		const below0TempTime = Number(`${scannedCode[2]}`);
-		const temp = `${scannedCode.slice(3,5)}`
-		const above0TempTime =  Number(`${scannedCode.slice(5,7)}`);
+		const temp = `${scannedCode.slice(3, 5)}`;
+		const above0TempTime = Number(`${scannedCode.slice(5, 7)}`);
 		let qc = 1;
-		if(Number(above0TempTime) < firstQcLimit){
+		if (Number(above0TempTime) < firstQcLimit) {
 			qc = 1;
-		}
-		else if(Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
+		} else if (Number(above0TempTime) >= firstQcLimit && Number(above0TempTime) < secondQcLimit) {
 			qc = 2;
-		}else if (Number(above0TempTime) >= secondQcLimit && Number(above0TempTime) < thirdQcLimit) {
+		} else if (Number(above0TempTime) >= secondQcLimit && Number(above0TempTime) < thirdQcLimit) {
 			qc = 3;
-		}else if (Number(above0TempTime) >= thirdQcLimit) {
+		} else if (Number(above0TempTime) >= thirdQcLimit) {
 			qc = 4;
 		}
-		if(Number(below0TempTime) >= 1){
+		if (Number(below0TempTime) >= 1) {
 			qc = 5;
 		}
-		const miniCodeState =  {
+		const miniCodeState = {
 			above0TempTime,
 			below0TempTime,
 			temp,
 			qc,
 			scanId
-		}
-		const codeToSend = `90000000${scanId}${qc}9`
+		};
+		const codeToSend = `90000000${scanId}${qc}9`;
 
 		handleSendBarcode.mutateAsync({
 			barcode: codeToSend,
@@ -137,17 +136,7 @@ const ScanCode = () => {
 	return (
 		<Layout>
 			<Center sx={{flexDirection: 'column', paddingInline: '2rem'}}>
-				<Text>Set QC limits</Text>
-				<Input value={firstQcLimit} type="number" placeholder="set first qc limit" mt="1rem"  onChange={(e: any) => setFirstQcLimit(e.target.value)}/>
-				<Input value={secondQcLimit} type="number" placeholder="set second qc limit" mt="1rem" onChange={(e: any) => setSecondQcLimit(e.target.value)}/>
-				<Input value={thirdQcLimit} type="number" placeholder="set third qc limit" mt="1rem" onChange={(e: any) => setThirdQcLimit(e.target.value)}/>
-				{/*<TempBarcodeScanner onDetected={(resp: string): void => {*/}
-				{/*	console.log(resp);*/}
-				{/*}} />*/}
-				<TempBarcodeScanner2 onDetected={(resp: string): void => {
-					setCode(resp);
-				}}
-				onDetectedMini={onMiniCodeScan}/>
+
 				{/*{!code && (*/}
 				{/*	<div style={{width: '90vw'}}>*/}
 				{/*		<Text>*/}
@@ -165,7 +154,20 @@ const ScanCode = () => {
 				{/*		/>*/}
 				{/*	</div>*/}
 				{/*)}*/}
-				{isLoading && <p>loading...</p>}
+				{handleSendBarcode.isLoading ? <Loader size="xl" variant="dots"/> : (
+					<>
+						<Text>Set QC limits</Text>
+						<Input value={firstQcLimit} type="number" placeholder="set first qc limit" mt="1rem"
+							   onChange={(e: any) => setFirstQcLimit(e.target.value)}/>
+						<Input value={secondQcLimit} type="number" placeholder="set second qc limit" mt="1rem"
+							   onChange={(e: any) => setSecondQcLimit(e.target.value)}/>
+						<Input value={thirdQcLimit} type="number" placeholder="set third qc limit" mt="1rem"
+							   onChange={(e: any) => setThirdQcLimit(e.target.value)}/>
+						<TempBarcodeScanner2 onDetected={(resp: string): void => {
+							setCode(resp);
+						}}
+											 onDetectedMini={onMiniCodeScan}/>
+					</>)}
 				{/*@ts-ignore*/}
 				{import.meta.env.DEV && <Button onClick={onMiniCodeScan}>Skip</Button>}
 			</Center>
