@@ -174,7 +174,7 @@ const ScanCode = () => {
 			scanId,
 			qc
 		};
-		const codeToSend = `90000000${scanId}${frozen}9`;
+		const codeToSend = `8000000${scanId}${frozen}9`;
 
 		handleSendBarcode.mutateAsync({
 			barcode: codeToSend,
@@ -208,7 +208,7 @@ const ScanCode = () => {
 				{/*		/>*/}
 				{/*	</div>*/}
 				{/*)}*/}
-				{handleSendBarcode.isLoading ? <Loader size="xl" variant="dots"/> : (
+				{handleSendBarcode.isLoading ? <Loader size="xl" mt="2rem" variant="dots"/> : (
 					<>
 						<Text>Set QC limits</Text>
 						<Input value={firstQcLimit} type="number" placeholder="set first qc limit" mt="1rem"
