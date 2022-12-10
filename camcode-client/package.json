@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "fixzxing": "copy fix@zxing/library-cjs-core-oned-AbstractUPCEANReader.js node_modules\\@zxing\\library\\cjs\\core\\oned\\AbstractUPCEANReader.js",
+    "fixzxing": "cp fix@zxing/library-cjs-core-oned-AbstractUPCEANReader.js node_modules\\@zxing\\library\\cjs\\core\\oned\\AbstractUPCEANReader.js",
     "fixzxing-bash": "cp -v fix@zxing/library-cjs-core-oned-AbstractUPCEANReader.js node_modules/@zxing/library/cjs/core/oned/AbstractUPCEANReader.js",
     "deploy": "node ./server/app.js",
     "start": "vite --host && npm run fixzxing",

@@ -28,7 +28,6 @@ const ScanCode = () => {
 	const [cordinates, setCordinates] = useState({latitude: 0, longitude: 0});
 	const [code, setCode] = useState<string>('');
 	const navigate = useNavigate();
-	const [isLoading, setIsLoading] = useState(false);
 	const [firstQcLimit, setFirstQcLimit] = useState(15);
 	const [secondQcLimit, setSecondQcLimit] = useState(60);
 	const [thirdQcLimit, setThirdQcLimit] = useState(240);
@@ -40,9 +39,19 @@ const ScanCode = () => {
 			location.reload();
 		},
 		onSuccess: (res) => {
+			if(res.isTest){
+				navigate('/ReviewScan', {
+					state: {
+						proCodeState: res.proCodeState,
+						miniCodeState: res.miniCodeState,
+						codeFromCamera: code,
+					}
+				});
+			}
 			setCustomStyle((prev: any) => ({...prev, iScanID: res.message.scid}));
 			navigate('/ReviewScan', {
 				state: {
+					proCodeState: res.proCodeState,
 					miniCodeState: res.miniCodeState,
 					textColor: res.message.nColor,
 					scannedBarcode: code.slice(0, 10),
@@ -84,12 +93,6 @@ const ScanCode = () => {
 			scannedBarcode: scannedCode.slice(0, 10),
 			currentScannedQC: scannedCode.slice(-2)[0]
 		});
-		// navigate('/ReviewScan', {
-		// 	state: {
-		// 		cardBg: '#ab2929',
-		// 		result: 'You Meal is out of date'
-		// 	}
-		// });
 	};
 	const onMiniCodeScan = (code: string | undefined) => {
 		let scannedCode = '1271033';
@@ -133,6 +136,57 @@ const ScanCode = () => {
 		});
 	};
 
+	const onProCodeScan = (code: string | undefined) => {
+		let scannedCode = 'P00108223051';
+		let isTest = true;
+		if (typeof code === 'string') {
+			scannedCode = code;
+			isTest = false;
+		}
+		console.log(scannedCode);
+		const scanId = `${scannedCode.slice(1, 4)}`;
+		const temp = Number(`${scannedCode.slice(4, 6)}`);
+		const counterForQC = Number(`${scannedCode.slice(6, 8)}`);
+		const temp2 = Number(`${scannedCode.slice(8, 10)}`);
+		const counter2 = Number(`${scannedCode[10]}`);
+		const frozen = Number(`${scannedCode[11]}`);
+
+		let qc = 1;
+		if (Number(counterForQC) < firstQcLimit) {
+			qc = 1;
+		} else if (Number(counterForQC) >= firstQcLimit && Number(counterForQC) < secondQcLimit) {
+			qc = 2;
+		} else if (Number(counterForQC) >= secondQcLimit && Number(counterForQC) < thirdQcLimit) {
+			qc = 3;
+		} else if (Number(counterForQC) >= thirdQcLimit) {
+			qc = 4;
+		}
+		if (Number(frozen) >= 1) {
+			qc = 5;
+		}
+		const proCodeState = {
+			counterForQC,
+			scannedCode,
+			temp2,
+			temp,
+			counter2,
+			frozen,
+			scanId,
+			qc
+		};
+		const codeToSend = `90000000${scanId}${frozen}9`;
+
+		handleSendBarcode.mutateAsync({
+			barcode: codeToSend,
+			//@ts-ignore
+			long: state?.longitude || cordinates.longitude,
+			//@ts-ignore
+			lat: state?.latitude || cordinates.latitude,
+			proCodeState,
+			isTest
+		});
+	};
+
 	return (
 		<Layout>
 			<Center sx={{flexDirection: 'column', paddingInline: '2rem'}}>
@@ -163,13 +217,10 @@ const ScanCode = () => {
 							   onChange={(e: any) => setSecondQcLimit(e.target.value)}/>
 						<Input value={thirdQcLimit} type="number" placeholder="set third qc limit" mt="1rem"
 							   onChange={(e: any) => setThirdQcLimit(e.target.value)}/>
-						<TempBarcodeScanner2 onDetected={(resp: string): void => {
-							setCode(resp);
-						}}
-											 onDetectedMini={onMiniCodeScan}/>
+						<TempBarcodeScanner2 onDetected={onProCodeScan} onDetectedMini={onMiniCodeScan}/>
 					</>)}
 				{/*@ts-ignore*/}
-				{import.meta.env.DEV && <Button onClick={onMiniCodeScan}>Skip</Button>}
+				{import.meta.env.DEV && <Button onClick={onProCodeScan}>Skip</Button>}
 			</Center>
 		</Layout>
 	);
