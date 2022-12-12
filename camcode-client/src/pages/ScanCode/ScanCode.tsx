@@ -137,6 +137,7 @@ const ScanCode = () => {
 	};
 
 	const onProCodeScan = (code: string | undefined) => {
+		debugger;
 		let scannedCode = 'P00108223051';
 		let isTest = true;
 		if (typeof code === 'string') {
@@ -174,7 +175,7 @@ const ScanCode = () => {
 			scanId,
 			qc
 		};
-		const codeToSend = `8000000${scanId}${frozen}9`;
+		const codeToSend = `8000000${scanId}${qc}9`;
 
 		handleSendBarcode.mutateAsync({
 			barcode: codeToSend,
