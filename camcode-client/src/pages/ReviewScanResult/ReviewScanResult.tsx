@@ -1,26 +1,20 @@
 //@ts-nocheck
-import useCustomTheme from '@/hooks/useCustomTheme';
 import useFetchTheme from '@/hooks/useFetchTheme';
 import Layout from '@/layout/Layout';
 import Button from '@/lib/Button/Button';
-import { Anchor, Card, Center, Text, Title } from '@mantine/core';
-import dayjs from 'dayjs';
+import { Card, Center, Text, Title } from '@mantine/core';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const ReviewScanResult = () => {
 	const {state} = useLocation();
 	const navigate = useNavigate();
-	const {customStyle} = useCustomTheme();
 	const textColor = () => {
 		const strToNum = Number(state.textColor);
-		const retNumber = '#' + ('000000' + (strToNum >>> 0).toString(16)).slice(-6);
-		console.log('retNumber', retNumber);
-		return retNumber;
+		return '#' + ('000000' + (strToNum >>> 0).toString(16)).slice(-6);
 	};
 	useFetchTheme();
-	const generateSurveyLink = customStyle.surveyMetaData ?
-		`${customStyle.surveyLink}${customStyle.surveyLink[customStyle.surveyLink.length - 1] === '/' ? '' : ''}?${customStyle.surveyQueryParams[0]}=${state?.codeFromCamera?.slice(0, -2) || state.scannedBarcode}&${customStyle?.surveyQueryParams[1]}=${state?.sQuality?.substring(0, 3)}&${customStyle?.surveyQueryParams[2]}=${state.scannedBarcodeSCID}` : customStyle.surveyLink;
+	const isProScan = !!state.proCodeState;
 
 	return (
 		<Layout>
@@ -36,43 +30,55 @@ const ReviewScanResult = () => {
 					</Center>
 				</Card>
 				{/*<Text>{JSON.stringify(state)}</Text>*/}
-				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
-					<Text>ID</Text> <Text>{state.miniCodeState?.scanId}</Text>
-				</div>
-				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
-					<Text>Temp</Text> <Text>{Number(state.miniCodeState?.temp) > 70 ? `-${Number(state.miniCodeState?.temp) - 70}`: state.miniCodeState?.temp }</Text>
-				</div>
-				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
-					<Text>Duration Above Threshold </Text>
-					<Text>{state.miniCodeState?.above0TempTime >= 99 ? 'above 99 minutes' : `${state.miniCodeState?.above0TempTime} minutes`}</Text>
-				</div>
-				<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
-					<Text>Duration Below Threshold</Text>
-					<Text>{state.miniCodeState?.below0TempTime >= 9 ? 'above 10 minutes' : `${state.miniCodeState?.below0TempTime} minutes`}</Text>
-				</div>
-				{/*<Button mb="0.5rem" sx={{width: '50%'}} onClick={() => navigate('/Feedback')}>*/}
-				{/*	FeedBack*/}
-				{/*</Button>*/}
-				{/*{!(customStyle?.removeContactButton) &&*/}
-				{/*    <Button my="0.5rem" sx={{width: '50%'}} onClick={() => navigate('/ContactUs')}>*/}
-				{/*        Contact Us*/}
-				{/*    </Button>}*/}
-				{/*{customStyle.surveyLink && (*/}
-				{/*	<>*/}
-				{/*		<Text mt="2rem">We Want Your Feedback!</Text>*/}
-				{/*		<Anchor*/}
-				{/*			my="0.5rem"*/}
-				{/*			sx={{width: '50%', textDecoration: 'none !important', background: '#1c7ed6', color: '#fff', borderRadius: '20px'}}*/}
-				{/*			href={generateSurveyLink}*/}
-				{/*				target="_blank"*/}
-				{/*		>*/}
-				{/*			Survey*/}
-				{/*		</Anchor>*/}
-				{/*	</>*/}
-				{/*)}*/}
-				<Button mt="4rem" sx={{width: '50%'}} color="red" onClick={() => navigate('/ScanCode')}>
-					Scan Again
-				</Button>
+				{isProScan ? (
+					<>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>ID</Text> <Text>{state.proCodeState?.scanId}</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Temp one</Text> <Text>{Number(state.proCodeState?.temp) > 50 ? `${ 50 - Number(state.proCodeState?.temp)}`: state.proCodeState?.temp }</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Duration Above Temp one </Text>
+							<Text>{state.proCodeState?.counterForQC >= 99 ? 'above 99 minutes' : `${state.proCodeState?.counterForQC} minutes`}</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Temp two</Text> <Text>{Number(state.proCodeState?.temp2) > 50 ? `${50 - Number(state.proCodeState?.temp2)}`: state.proCodeState?.temp2 }</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Duration Above Temp two </Text>
+							<Text>{state.proCodeState?.counter2 >= 9 ? 'above 9 minutes' : `${state.proCodeState?.counter2} minutes`}</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Minutes below zero </Text>
+							<Text>{state.proCodeState?.frozen >= 9 ? 'above 9 minutes' : `${state.proCodeState?.frozen} minutes`}</Text>
+						</div>
+						<Button mt="4rem" sx={{width: '50%'}} color="red" onClick={() => navigate('/ScanCode')}>
+							Scan Again
+						</Button>
+					</>
+				) : (
+					<>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>ID</Text> <Text>{state.miniCodeState?.scanId}</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Temp</Text> <Text>{Number(state.miniCodeState?.temp) > 70 ? `-${Number(state.miniCodeState?.temp) - 70}`: state.miniCodeState?.temp }</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Duration Above Threshold </Text>
+							<Text>{state.miniCodeState?.above0TempTime >= 99 ? 'above 99 minutes' : `${state.miniCodeState?.above0TempTime} minutes`}</Text>
+						</div>
+						<div style={{display: 'flex', width: "90%", justifyContent: 'space-between', alignItems: 'center'}}>
+							<Text>Duration Below Threshold</Text>
+							<Text>{state.miniCodeState?.below0TempTime >= 9 ? 'above 10 minutes' : `${state.miniCodeState?.below0TempTime} minutes`}</Text>
+						</div>
+
+						<Button mt="4rem" sx={{width: '50%'}} color="red" onClick={() => navigate('/ScanCode')}>
+							Scan Again
+						</Button>
+					</>
+				)}
 			</Center>
 		</Layout>
 	);
