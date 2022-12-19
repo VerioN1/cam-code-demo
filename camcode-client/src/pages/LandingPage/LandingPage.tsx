@@ -42,7 +42,7 @@ const LandingPage = () => {
 				<Layout>
 					<Center sx={{flexDirection: 'column', textAlign: 'center'}}>
 						<Title mt="1rem" sx={{fontFamily: 'Poppins'}}>
-							Smart Scanner
+							Smart Scanner PRO | MINI
 						</Title>
 						<Text mt="2rem">Please allow camera and location access to continue scanning</Text>
 						<Text mt="2rem">If you blocked your camera by mistake, simply refresh the page!</Text>
